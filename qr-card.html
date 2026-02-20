@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bar DeCo — QR Card</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #f8f4ec;
+      --ink:        #1c1a18;
+      --ink-light:  #6b6258;
+      --gold:       #8a6e2f;
+      --gold-light: #b89a52;
+      --rule:       #ccc0a8;
+      --rule-faint: #e4ddd0;
+    }
+
+    html {
+      background: #cfc8bb;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5in;
+    }
+
+    body {
+      font-family: 'Cormorant Garamond', Garamond, Georgia, serif;
+      color: var(--ink);
+    }
+
+    .card {
+      width: 3.5in;
+      background: var(--bg);
+      padding: 0.35in 0.3in;
+      box-shadow: 0 4px 22px rgba(0,0,0,0.18);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.18in;
+    }
+
+    .card-border {
+      position: absolute;
+      inset: 0.15in;
+      border: 1px solid var(--rule);
+      pointer-events: none;
+    }
+    .card-border-inner {
+      position: absolute;
+      inset: 0.22in;
+      border: 1px solid var(--rule-faint);
+      pointer-events: none;
+    }
+
+    .pips {
+      font-size: 0.38rem;
+      letter-spacing: 0.9em;
+      color: var(--gold-light);
+    }
+
+    .title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+    }
+
+    .rule {
+      width: 1.4rem;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .sub {
+      font-size: 0.6rem;
+      font-style: italic;
+      letter-spacing: 0.18em;
+      color: var(--ink-light);
+    }
+
+    .qr {
+      width: 1.6in;
+      height: 1.6in;
+      border: 1px solid var(--rule-faint);
+      padding: 6px;
+      background: white;
+    }
+
+    .qr img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .cta {
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      color: var(--ink-light);
+      text-transform: uppercase;
+    }
+
+    @media print {
+      @page { size: 3.5in 5in portrait; margin: 0; }
+      html { background: white; padding: 0; min-height: 0; }
+      .card {
+        box-shadow: none;
+        width: 3.5in;
+        min-height: 5in;
+        justify-content: center;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-border"></div>
+    <div class="card-border-inner"></div>
+
+    <div class="pips">◆ &nbsp; ◆ &nbsp; ◆</div>
+
+    <h1 class="title">Bar<br>DeCo</h1>
+
+    <div class="rule"></div>
+
+    <p class="sub">A curated collection of classic &amp; craft recipes</p>
+
+    <div class="qr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&color=1c1a18&bgcolor=ffffff&data=https://frabjous-trifle-a333bd.netlify.app/" alt="QR code">
+    </div>
+
+    <p class="cta">Scan to browse the menu</p>
+
+    <div class="pips">◆ &nbsp; ◆ &nbsp; ◆</div>
+  </div>
+</body>
+</html>
