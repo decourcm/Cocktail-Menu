@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cocktail Compendium</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #f8f4ec;
+      --ink:         #1c1a18;
+      --ink-mid:     #3d3830;
+      --ink-light:   #6b6258;
+      --gold:        #8a6e2f;
+      --gold-light:  #b89a52;
+      --rule:        #ccc0a8;
+      --rule-faint:  #e4ddd0;
+    }
+
+    /* ── SCREEN: show pages as stacked cards ── */
+    html {
+      background: #cfc8bb;
+      padding: 0.4in 0;
+    }
+
+    body {
+      font-family: 'Cormorant Garamond', Garamond, Georgia, serif;
+      font-size: 10pt;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+
+    .page {
+      width: 5in;
+      min-height: 8in;
+      background: var(--bg);
+      margin: 0 auto 0.35in;
+      padding: 0.4in 0.38in;
+      box-shadow: 0 4px 22px rgba(0,0,0,0.18);
+      position: relative;
+    }
+
+    /* ── COVER ── */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 8in;
+    }
+
+    .cover-border {
+      position: absolute;
+      inset: 0.3in;
+      border: 1px solid var(--rule);
+      pointer-events: none;
+    }
+    .cover-border-inner {
+      position: absolute;
+      inset: 0.4in;
+      border: 1px solid var(--rule-faint);
+      pointer-events: none;
+    }
+
+    .cover-pips {
+      font-size: 0.45rem;
+      letter-spacing: 0.9em;
+      color: var(--gold-light);
+      margin-bottom: 1.8rem;
+    }
+
+    .cover-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      line-height: 1.05;
+    }
+
+    .cover-rule {
+      width: 1.8rem;
+      height: 1px;
+      background: var(--gold);
+      margin: 1.2rem auto;
+    }
+
+    .cover-sub {
+      font-size: 0.72rem;
+      font-style: italic;
+      letter-spacing: 0.2em;
+      color: var(--ink-light);
+      margin-bottom: 2.2rem;
+    }
+
+    .cover-glasses {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 1.1rem;
+    }
+
+    .cover-glass { color: var(--gold-light); opacity: 0.7; }
+
+    /* ── RECIPE PAGE ── */
+
+    /* Page header */
+    .page-header {
+      text-align: center;
+      margin-bottom: 0.22in;
+    }
+
+    .header-ornament {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin-bottom: 0.55rem;
+    }
+    .header-ornament::before,
+    .header-ornament::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gold);
+    }
+    .header-ornament span {
+      font-size: 0.4rem;
+      letter-spacing: 0.6em;
+      color: var(--gold);
+    }
+
+    .header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+    }
+
+    .header-desc {
+      font-size: 0.62rem;
+      font-style: italic;
+      letter-spacing: 0.14em;
+      color: var(--ink-light);
+      margin-top: 0.3rem;
+    }
+
+    .header-glass {
+      color: var(--gold-light);
+      opacity: 0.55;
+      margin: 0.3rem auto 0;
+      display: block;
+    }
+
+    .header-bottom-rule {
+      width: 100%;
+      height: 1px;
+      background: var(--rule);
+      margin-top: 0.3rem;
+    }
+
+    /* ── RECIPES ── */
+    .recipes { display: flex; flex-direction: column; }
+
+    .recipe {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      padding: 0.21rem 0;
+      border-bottom: 1px solid var(--rule-faint);
+    }
+
+    .glass-icon {
+      width: 15px;
+      height: 21px;
+      flex-shrink: 0;
+      color: var(--gold-light);
+      margin-top: 1px;
+    }
+
+    .recipe-text { flex: 1; min-width: 0; }
+
+    .recipe-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .recipe-source {
+      font-size: 0.65rem;
+      font-style: italic;
+      color: var(--gold);
+      letter-spacing: 0.02em;
+    }
+
+    .recipe-ing {
+      font-size: 0.72rem;
+      color: var(--ink-mid);
+      font-weight: 300;
+      line-height: 1.45;
+      margin-top: 0.12rem;
+    }
+
+    .dot { color: var(--gold-light); margin: 0 0.12em; }
+
+    /* ── PRINT ── */
+    @media print {
+      @page { size: 5in 8in portrait; margin: 0.4in 0.38in; }
+
+      html { background: white; padding: 0; }
+
+      body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .page {
+        width: 5in !important;
+        min-height: 0 !important;
+        height: 8in;
+        box-shadow: none;
+        margin: 0 !important;
+        padding: 0.4in 0.38in;
+        page-break-after: always;
+        break-after: page;
+        overflow: hidden;
+      }
+
+      .page:last-child { page-break-after: auto; break-after: auto; }
+
+      /* Fix: min-height: 8in from screen CSS would otherwise override height */
+      .cover { min-height: 0 !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ SVG SYMBOLS ══════════ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="g-coupe" viewBox="0 0 30 44" stroke="currentColor" fill="none"
+          stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 3,4 L 3,10 Q 15,27 27,10 L 27,4"/>
+    <line x1="15" y1="27" x2="15" y2="39"/>
+    <line x1="7"  y1="39" x2="23" y2="39"/>
+  </symbol>
+
+  <symbol id="g-rocks" viewBox="0 0 30 44" stroke="currentColor" fill="none"
+          stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 5,12 L 6,38 L 24,38 L 25,12 Z"/>
+  </symbol>
+
+  <symbol id="g-nicknora" viewBox="0 0 30 44" stroke="currentColor" fill="none"
+          stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 9,5 L 9,12 Q 15,23 21,12 L 21,5"/>
+    <line x1="15" y1="23" x2="15" y2="36"/>
+    <line x1="9"  y1="36" x2="21" y2="36"/>
+  </symbol>
+
+  <symbol id="g-martini" viewBox="0 0 30 44" stroke="currentColor" fill="none"
+          stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 2,5 L 15,27 L 28,5 L 2,5"/>
+    <line x1="15" y1="27" x2="15" y2="38"/>
+    <line x1="8"  y1="38" x2="22" y2="38"/>
+  </symbol>
+
+  <symbol id="g-highball" viewBox="0 0 30 44" stroke="currentColor" fill="none"
+          stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 9,4 L 9,40 L 21,40 L 21,4"/>
+  </symbol>
+
+  <symbol id="g-pilsner" viewBox="0 0 30 44" stroke="currentColor" fill="none"
+          stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 5,5 L 10,40 L 20,40 L 25,5"/>
+  </symbol>
+</svg>
+
+
+<!-- ══════════ COVER ══════════ -->
+<div class="page">
+  <div class="cover">
+    <div class="cover-border"></div>
+    <div class="cover-border-inner"></div>
+    <div class="cover-pips">◆ &nbsp; ◆ &nbsp; ◆</div>
+    <h1 class="cover-title">Cocktail<br>Compendium</h1>
+    <div class="cover-rule"></div>
+    <p class="cover-sub">A curated collection of classic &amp; craft recipes</p>
+    <div class="cover-glasses">
+      <svg class="cover-glass" width="22" height="30"><use href="#g-rocks"/></svg>
+      <svg class="cover-glass" width="26" height="34"><use href="#g-coupe"/></svg>
+      <svg class="cover-glass" width="30" height="36"><use href="#g-martini"/></svg>
+      <svg class="cover-glass" width="26" height="34"><use href="#g-nicknora"/></svg>
+      <svg class="cover-glass" width="20" height="36"><use href="#g-highball"/></svg>
+      <svg class="cover-glass" width="23" height="36"><use href="#g-pilsner"/></svg>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ WHISKEY & BOURBON ══════════ -->
+<div class="page">
+  <header class="page-header">
+    <div class="header-ornament"><span>◆ ◆ ◆</span></div>
+    <h2 class="header-title">Whiskey<br>&amp; Bourbon</h2>
+    <p class="header-desc">Stirred &amp; spirit-forward</p>
+    <svg class="header-glass" width="28" height="38"><use href="#g-rocks"/></svg>
+    <div class="header-bottom-rule"></div>
+  </header>
+
+  <div class="recipes">
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-rocks"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Old-Fashioned</div>
+        <p class="recipe-ing">Bourbon <span class="dot">·</span> Demerara Syrup <span class="dot">·</span> Angostura <span class="dot">·</span> Bitter Truth Aromatic</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-rocks"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Sazerac</div>
+        <div class="recipe-source">Death &amp; Co</div>
+        <p class="recipe-ing">Rye <span class="dot">·</span> Cognac <span class="dot">·</span> Absinthe Rinse <span class="dot">·</span> Demerara <span class="dot">·</span> Peychaud's <span class="dot">·</span> Angostura</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Manhattan</div>
+        <p class="recipe-ing">Rye <span class="dot">·</span> Sweet Vermouth <span class="dot">·</span> Angostura</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Boulevardier</div>
+        <p class="recipe-ing">Bourbon <span class="dot">·</span> Sweet Vermouth <span class="dot">·</span> Campari</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-nicknora"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Old Pal</div>
+        <p class="recipe-ing">Rye <span class="dot">·</span> Campari <span class="dot">·</span> Dry Vermouth</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-rocks"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Improved Whiskey Cocktail</div>
+        <p class="recipe-ing">Bourbon <span class="dot">·</span> Maraschino <span class="dot">·</span> Absinthe <span class="dot">·</span> Angostura <span class="dot">·</span> Peychaud's</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-rocks"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Whiskey Sour</div>
+        <p class="recipe-ing">Bourbon <span class="dot">·</span> Lemon <span class="dot">·</span> Simple Syrup <span class="dot">·</span> Egg White</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-rocks"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Fancy-Free</div>
+        <div class="recipe-source">Death &amp; Co</div>
+        <p class="recipe-ing">Rye <span class="dot">·</span> Maraschino <span class="dot">·</span> Angostura <span class="dot">·</span> Orange Bitters</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Left Hand</div>
+        <div class="recipe-source">Death &amp; Co</div>
+        <p class="recipe-ing">Bourbon <span class="dot">·</span> Campari <span class="dot">·</span> Sweet Vermouth <span class="dot">·</span> Mole Bitters</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Brown Derby</div>
+        <p class="recipe-ing">Bourbon <span class="dot">·</span> Fresh Grapefruit <span class="dot">·</span> Honey Syrup</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-martini"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Coffee and Cigarettes</div>
+        <p class="recipe-ing">Caol Ila Scotch <span class="dot">·</span> Galliano Ristretto <span class="dot">·</span> Carpano Antica <span class="dot">·</span> Mole Bitters</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════ GIN ══════════ -->
+<div class="page">
+  <header class="page-header">
+    <div class="header-ornament"><span>◆ ◆ ◆</span></div>
+    <h2 class="header-title">Gin</h2>
+    <p class="header-desc">From refined to refreshing</p>
+    <svg class="header-glass" width="30" height="40"><use href="#g-coupe"/></svg>
+    <div class="header-bottom-rule"></div>
+  </header>
+
+  <div class="recipes">
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-rocks"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Negroni</div>
+        <p class="recipe-ing">London Dry Gin <span class="dot">·</span> Campari <span class="dot">·</span> Sweet Vermouth</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Aviation</div>
+        <p class="recipe-ing">Plymouth Gin <span class="dot">·</span> Maraschino <span class="dot">·</span> Crème Yvette <span class="dot">·</span> Lemon</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Bee's Knees</div>
+        <div class="recipe-source">Death &amp; Co</div>
+        <p class="recipe-ing">London Dry Gin <span class="dot">·</span> Lemon <span class="dot">·</span> Honey Syrup <span class="dot">·</span> Lavender Bitters</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-highball"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Gin Fizz</div>
+        <p class="recipe-ing">London Dry Gin <span class="dot">·</span> Lemon <span class="dot">·</span> Simple Syrup <span class="dot">·</span> Egg White <span class="dot">·</span> Club Soda</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Corpse Reviver No. 2</div>
+        <div class="recipe-source">Death &amp; Co</div>
+        <p class="recipe-ing">London Dry Gin <span class="dot">·</span> Cointreau <span class="dot">·</span> Lillet Blanc <span class="dot">·</span> Lemon <span class="dot">·</span> Absinthe</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-nicknora"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Lucien Gaudin</div>
+        <p class="recipe-ing">London Dry Gin <span class="dot">·</span> Dry Vermouth <span class="dot">·</span> Campari <span class="dot">·</span> Cointreau</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Bella Luna</div>
+        <p class="recipe-ing">Plymouth Gin <span class="dot">·</span> St-Germain <span class="dot">·</span> Crème Yvette <span class="dot">·</span> Lemon</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-rocks"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Elder Fashion</div>
+        <p class="recipe-ing">Plymouth Gin <span class="dot">·</span> St-Germain <span class="dot">·</span> Orange Bitters</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-pilsner"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Hyde Park Swizzle</div>
+        <p class="recipe-ing">Plymouth Gin <span class="dot">·</span> Lime <span class="dot">·</span> Simple Syrup <span class="dot">·</span> Angostura <span class="dot">·</span> Peychaud's <span class="dot">·</span> Mint</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Southside</div>
+        <p class="recipe-ing">Plymouth Gin <span class="dot">·</span> Lime <span class="dot">·</span> Simple Syrup <span class="dot">·</span> Angostura <span class="dot">·</span> Mint</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Last Word</div>
+        <p class="recipe-ing">Plymouth Gin <span class="dot">·</span> Green Chartreuse <span class="dot">·</span> Maraschino <span class="dot">·</span> Lime</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">French Blonde</div>
+        <p class="recipe-ing">London Dry Gin <span class="dot">·</span> St-Germain <span class="dot">·</span> Dry Vermouth <span class="dot">·</span> Fresh Grapefruit</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════ TEQUILA & MEZCAL ══════════ -->
+<div class="page">
+  <header class="page-header">
+    <div class="header-ornament"><span>◆ ◆ ◆</span></div>
+    <h2 class="header-title">Tequila<br>&amp; Mezcal</h2>
+    <p class="header-desc">Agave &amp; smoke</p>
+    <svg class="header-glass" width="28" height="38"><use href="#g-rocks"/></svg>
+    <div class="header-bottom-rule"></div>
+  </header>
+
+  <div class="recipes">
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-rocks"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Oaxacan Old Fashioned</div>
+        <p class="recipe-ing">Reposado Tequila <span class="dot">·</span> Mezcal <span class="dot">·</span> Agave Nectar <span class="dot">·</span> Angostura</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-rocks"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Margarita</div>
+        <p class="recipe-ing">Blanco Tequila <span class="dot">·</span> Cointreau <span class="dot">·</span> Lime <span class="dot">·</span> Agave</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-highball"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Paloma</div>
+        <p class="recipe-ing">Blanco Tequila <span class="dot">·</span> Fresh Grapefruit <span class="dot">·</span> Lime <span class="dot">·</span> Agave <span class="dot">·</span> Club Soda</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-pilsner"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Jalisco Swizzle</div>
+        <p class="recipe-ing">Blanco Tequila <span class="dot">·</span> Mezcal <span class="dot">·</span> Lime <span class="dot">·</span> Cane Sugar <span class="dot">·</span> Angostura</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Tears of Gold</div>
+        <p class="recipe-ing">Reposado Tequila <span class="dot">·</span> Licor 43 <span class="dot">·</span> Galliano Ristretto <span class="dot">·</span> Grappa <span class="dot">·</span> Cold Brew <span class="dot">·</span> Demerara <span class="dot">·</span> Mole Bitters</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-rocks"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Tommy's Margarita</div>
+        <p class="recipe-ing">Blanco Tequila <span class="dot">·</span> Lime <span class="dot">·</span> Agave Nectar</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Siesta</div>
+        <div class="recipe-source">Death &amp; Co</div>
+        <p class="recipe-ing">Blanco Tequila <span class="dot">·</span> Campari <span class="dot">·</span> Fresh Grapefruit <span class="dot">·</span> Lime <span class="dot">·</span> Simple Syrup</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Naked and Famous</div>
+        <div class="recipe-source">Death &amp; Co</div>
+        <p class="recipe-ing">Mezcal <span class="dot">·</span> Aperol <span class="dot">·</span> Yellow Chartreuse <span class="dot">·</span> Lime</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Division Bell</div>
+        <div class="recipe-source">Death &amp; Co</div>
+        <p class="recipe-ing">Mezcal <span class="dot">·</span> Aperol <span class="dot">·</span> Maraschino <span class="dot">·</span> Lime</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════ RUM ══════════ -->
+<div class="page">
+  <header class="page-header">
+    <div class="header-ornament"><span>◆ ◆ ◆</span></div>
+    <h2 class="header-title">Rum</h2>
+    <p class="header-desc">From the tropics to craft</p>
+    <svg class="header-glass" width="23" height="40"><use href="#g-pilsner"/></svg>
+    <div class="header-bottom-rule"></div>
+  </header>
+
+  <div class="recipes">
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Daiquiri</div>
+        <p class="recipe-ing">White Rum <span class="dot">·</span> Lime <span class="dot">·</span> Simple Syrup</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Hemingway Daiquiri</div>
+        <p class="recipe-ing">White Rum <span class="dot">·</span> Maraschino <span class="dot">·</span> Fresh Grapefruit <span class="dot">·</span> Lime</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Jovencourt Daiquiri</div>
+        <p class="recipe-ing">White Rum <span class="dot">·</span> Mezcal <span class="dot">·</span> Lime <span class="dot">·</span> Simple Syrup</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-rocks"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Mojito</div>
+        <p class="recipe-ing">White Rum <span class="dot">·</span> Lime <span class="dot">·</span> Simple Syrup <span class="dot">·</span> Mint <span class="dot">·</span> Angostura</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-rocks"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Jungle Bird</div>
+        <p class="recipe-ing">White Rum <span class="dot">·</span> Campari <span class="dot">·</span> Pineapple <span class="dot">·</span> Lime <span class="dot">·</span> Simple Syrup</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-pilsner"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Queen's Park Swizzle</div>
+        <p class="recipe-ing">White Rum <span class="dot">·</span> Lime <span class="dot">·</span> Simple Syrup <span class="dot">·</span> Mint <span class="dot">·</span> Peychaud's <span class="dot">·</span> Angostura</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Piña Colada Deconstruction</div>
+        <p class="recipe-ing">Pineapple-Infused Rum <span class="dot">·</span> Coconut Liqueur <span class="dot">·</span> Coconut Water <span class="dot">·</span> Cane Sugar <span class="dot">·</span> Angostura</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-highball"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Dark &amp; Stormy</div>
+        <p class="recipe-ing">Dark Rum <span class="dot">·</span> Ginger Beer <span class="dot">·</span> Lime</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-rocks"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Corn &amp; Oil</div>
+        <div class="recipe-source">Death &amp; Co</div>
+        <p class="recipe-ing">Barbadian Rum <span class="dot">·</span> Falernum <span class="dot">·</span> Angostura <span class="dot">·</span> Lime</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Hotel Nacional Special</div>
+        <p class="recipe-ing">Aged Rum <span class="dot">·</span> Apricot Brandy <span class="dot">·</span> Pineapple <span class="dot">·</span> Lime</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════ FURTHER AFIELD ══════════ -->
+<div class="page">
+  <header class="page-header">
+    <div class="header-ornament"><span>◆ ◆ ◆</span></div>
+    <h2 class="header-title">Further<br>Afield</h2>
+    <p class="header-desc">Cognac, vodka &amp; beyond</p>
+    <svg class="header-glass" width="30" height="40"><use href="#g-coupe"/></svg>
+    <div class="header-bottom-rule"></div>
+  </header>
+
+  <div class="recipes">
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-coupe"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Sidecar</div>
+        <p class="recipe-ing">Cognac <span class="dot">·</span> Cointreau <span class="dot">·</span> Lemon</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-highball"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Basil Limoncello Sipper</div>
+        <p class="recipe-ing">Vodka <span class="dot">·</span> Limoncello <span class="dot">·</span> Lemon <span class="dot">·</span> Agave <span class="dot">·</span> Basil <span class="dot">·</span> Club Soda</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-rocks"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Vieux Carré</div>
+        <p class="recipe-ing">Rye <span class="dot">·</span> Cognac <span class="dot">·</span> Sweet Vermouth <span class="dot">·</span> Bénédictine <span class="dot">·</span> Angostura <span class="dot">·</span> Peychaud's</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-highball"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Moscow Mule</div>
+        <p class="recipe-ing">Vodka <span class="dot">·</span> Ginger Beer <span class="dot">·</span> Lime</p>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <svg class="glass-icon"><use href="#g-martini"/></svg>
+      <div class="recipe-text">
+        <div class="recipe-name">Cosmopolitan</div>
+        <p class="recipe-ing">Vodka <span class="dot">·</span> Cointreau <span class="dot">·</span> Cranberry <span class="dot">·</span> Lime</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
