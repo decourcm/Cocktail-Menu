@@ -11,17 +11,18 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:         #f8f4ec;
-      --ink:        #1c1a18;
-      --ink-light:  #6b6258;
-      --gold:       #8a6e2f;
-      --gold-light: #b89a52;
-      --rule:       #ccc0a8;
-      --rule-faint: #e4ddd0;
+      --bg:         #1a1612;
+      --ink:        #ede5ce;
+      --ink-light:  #7a6c52;
+      --gold:       #c9a84c;
+      --gold-light: #e8cc78;
+      --gold-dim:   #5c4820;
+      --rule:       #3e3020;
+      --rule-faint: #282010;
     }
 
     html {
-      background: #cfc8bb;
+      background: #0a0804;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -38,32 +39,33 @@
       width: 3.5in;
       background: var(--bg);
       padding: 0.35in 0.3in;
-      box-shadow: 0 4px 22px rgba(0,0,0,0.18);
+      box-shadow: 0 4px 40px rgba(0,0,0,0.8);
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
       gap: 0.18in;
+      border: 1px solid var(--gold-dim);
     }
 
     .card-border {
       position: absolute;
       inset: 0.15in;
-      border: 1px solid var(--rule);
+      border: 1.5px solid var(--gold);
       pointer-events: none;
     }
     .card-border-inner {
       position: absolute;
-      inset: 0.22in;
-      border: 1px solid var(--rule-faint);
+      inset: 0.23in;
+      border: 0.5px solid var(--gold-dim);
       pointer-events: none;
     }
 
     .pips {
       font-size: 0.38rem;
-      letter-spacing: 0.9em;
-      color: var(--gold-light);
+      letter-spacing: 1.1em;
+      color: var(--gold);
     }
 
     .title {
@@ -71,26 +73,28 @@
       font-size: 1.7rem;
       font-weight: 400;
       line-height: 1.1;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.22em;
+      color: var(--gold-light);
     }
 
     .rule {
-      width: 1.4rem;
-      height: 1px;
+      width: 2rem;
+      height: 2px;
       background: var(--gold);
     }
 
     .sub {
-      font-size: 0.6rem;
-      font-style: italic;
-      letter-spacing: 0.18em;
+      font-size: 0.58rem;
+      font-style: normal;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
       color: var(--ink-light);
     }
 
     .qr {
       width: 1.6in;
       height: 1.6in;
-      border: 1px solid var(--rule-faint);
+      border: 1px solid var(--gold-dim);
       padding: 6px;
       background: white;
     }
@@ -102,8 +106,8 @@
     }
 
     .cta {
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
       color: var(--ink-light);
       text-transform: uppercase;
     }
